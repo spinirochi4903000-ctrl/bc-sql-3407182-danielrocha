@@ -51,19 +51,27 @@ CREATE TABLE clients (
 -- Usa datos realistas relacionados con tu dominio
 INSERT INTO services (id, name, price, time_hours) VALUES
     (1, 'Podada de Césped', 50000, 2);
+INSERT INTO services (id, name, price, time_hours) VALUES  
     (2, 'Rocio de Plagas',75000, 3);
+INSERT INTO services (id, name, price, time_hours) VALUES
     (3, 'Diseño de Paisajismo', 150000, 5);
+INSERT INTO services (id, name, price, time_hours) VALUES
     (4, 'Mantenimiento de Jardin', 150000, 4);
+INSERT INTO services (id, name, price, time_hours) VALUES
     (5, 'Instalación de Riego', 200000, 6);
 
     -- TODO: Agregar más registros
 
 INSERT INTO clients (id, name, email, phone) VALUES
-    (1, 'Daniel Rocha', 'A.drc@gmail.com', '3155040012');
-    (2, 'Juan Rincon', 'juan.rincon@gmail.com', '314 2182527');
-    (3, 'Tomas Martin', 'Lrush@gmail.com', '316 2182527');
-    (4, 'Lizabeth Moreno', 'liz@gmail.com', '317 2182527');
-    (5, 'Sofia Ramirez', 'sofia.ramirez@gmail.com', '318 2182527');
+    (10, 'Daniel Rocha', 'A.drc@gmail.com', '3155040012');
+INSERT INTO clients (id, name, email, phone) VALUES
+    (20, 'Juan Rincon', 'juan.rincon@gmail.com', '314 2182527');
+INSERT INTO clients (id, name, email, phone) VALUES
+    (30, 'Tomas Martin', 'Lrush@gmail.com', '316 2182527');
+INSERT INTO clients (id, name, email, phone) VALUES
+    (40, 'Lizabeth Moreno', 'liz@gmail.com', '317 2182527');
+INSERT INTO clients (id, name, email, phone) VALUES 
+    (50, 'Sofia Ramirez', 'sofia.ramirez@gmail.com', '318 2182527');
     -- TODO: Agregar más registros
 
 -- ============================================
@@ -72,13 +80,13 @@ INSERT INTO clients (id, name, email, phone) VALUES
 
 -- Mostrar todos los servicios con todas sus columnas
 SELECT *
-FROM   servicios;
+FROM   services;
 
 -- Mostrar solo el nombre de los servicios ordenados alfabéticamente
-SELECT nombre
-FROM   servicios
-ORDER BY nombre ASC;
+SELECT name
+FROM   services
+ORDER BY name ASC;
 
 -- Contar cuántos servicios hay en total
-SELECT COUNT(*) AS total_servicios
-FROM   servicios;
+SELECT COUNT(*) AS time_hours
+FROM   services;
