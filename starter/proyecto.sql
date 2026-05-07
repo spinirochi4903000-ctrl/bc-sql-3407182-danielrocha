@@ -1,92 +1,72 @@
 -- ============================================
--- PROYECTO SEMANAL: Conoce tu Dominio
--- Semana 01 — Introducción a Bases de Datos Relacionales
+-- PROYECTO SEMANAL: Empresa de Jardinería
+-- Semana 02 — DDL: Diseño de Esquemas
 -- ============================================
 
--- NOTA PARA EL APRENDIZ:
--- Adapta este esquema al dominio que te fue asignado.
--- Renombra las tablas y columnas según corresponda.
--- Ejemplos:
---   Biblioteca  → books, members, loans
---   Farmacia    → medicines, sales, inventory
---   Gimnasio    → members, routines, attendance
---   Restaurante → dishes, tables, orders
-
 -- ============================================
--- PASO 1: Crear la entidad principal
+-- LIMPIEZA: eliminar tablas si existen
 -- ============================================
 
--- TODO: Renombrar 'items' según tu dominio (ej: books, medicines, dishes)
--- TODO: Agregar columnas específicas de tu entidad principal
-CREATE TABLE services (
-    id         INTEGER PRIMARY KEY,
-    name        TEXT    NOT NULL,
-    price       REAL    NOT NULL,
-    time_hours  INTEGER NOT NULL
+DROP TABLE IF EXISTS schedules;
+DROP TABLE IF EXISTS workers;
+DROP TABLE IF EXISTS clients;
 
-    -- TODO: Agregar al menos 2 columnas más relevantes para tu dominio
-    -- Ejemplos: price REAL, description TEXT, is_active INTEGER DEFAULT 1
+-- ============================================
+-- TABLA 1: Clientes
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS clients (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    full_name       TEXT    NOT NULL,
+    phone           TEXT    NOT NULL UNIQUE,
+    address         TEXT    NOT NULL,
+    is_active       INTEGER NOT NULL DEFAULT 1,
+
+    CHECK (length(full_name) >= 3)
 );
 
 -- ============================================
--- PASO 2: Crear una segunda entidad
+-- TABLA 2: Trabajadores
 -- ============================================
 
--- TODO: Renombrar 'entities' según tu dominio (ej: members, clients, users)
--- TODO: Agregar columnas específicas
-CREATE TABLE clients (
-    id          INTEGER PRIMARY KEY,
-    name        TEXT    NOT NULL,
-    email       TEXT    NOT NULL UNIQUE,
-    phone       TEXT    NOT NULL UNIQUE
-    -- TODO: Agregar columnas relevantes
-    -- Ejemplos: email TEXT, phone TEXT, created_at TEXT
+CREATE TABLE IF NOT EXISTS workers (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    full_name       TEXT    NOT NULL,
+    specialty       TEXT    NOT NULL,
+    salary          REAL    NOT NULL,
+    email           TEXT    UNIQUE,
+    is_available    INTEGER NOT NULL DEFAULT 1,
+
+    CHECK (salary > 0)
 );
 
 -- ============================================
--- PASO 3: Insertar datos de prueba
+-- TABLA 3: Horarios
 -- ============================================
 
--- TODO: Insertar al menos 5 registros en cada tabla
--- Usa datos realistas relacionados con tu dominio
-INSERT INTO services (id, name, price, time_hours) VALUES
-    (1, 'Podada de Césped', 50000, 2);
-INSERT INTO services (id, name, price, time_hours) VALUES  
-    (2, 'Rocio de Plagas',75000, 3);
-INSERT INTO services (id, name, price, time_hours) VALUES
-    (3, 'Diseño de Paisajismo', 150000, 5);
-INSERT INTO services (id, name, price, time_hours) VALUES
-    (4, 'Mantenimiento de Jardin', 150000, 4);
-INSERT INTO services (id, name, price, time_hours) VALUES
-    (5, 'Instalación de Riego', 200000, 6);
+CREATE TABLE IF NOT EXISTS schedules (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    client_id       INTEGER NOT NULL,
+    worker_id       INTEGER NOT NULL,
+    service_date    DATE    NOT NULL,
+    service_time    TEXT    NOT NULL,
+    status          TEXT    NOT NULL DEFAULT 'pending',
 
-    -- TODO: Agregar más registros
+    CHECK (status IN ('pending', 'completed', 'cancelled')),
 
-INSERT INTO clients (id, name, email, phone) VALUES
-    (10, 'Daniel Rocha', 'A.drc@gmail.com', '3155040012');
-INSERT INTO clients (id, name, email, phone) VALUES
-    (20, 'Juan Rincon', 'juan.rincon@gmail.com', '314 2182527');
-INSERT INTO clients (id, name, email, phone) VALUES
-    (30, 'Tomas Martin', 'Lrush@gmail.com', '316 2182527');
-INSERT INTO clients (id, name, email, phone) VALUES
-    (40, 'Lizabeth Moreno', 'liz@gmail.com', '317 2182527');
-INSERT INTO clients (id, name, email, phone) VALUES 
-    (50, 'Sofia Ramirez', 'sofia.ramirez@gmail.com', '318 2182527');
-    -- TODO: Agregar más registros
+    FOREIGN KEY (client_id)
+        REFERENCES clients(id),
+
+    FOREIGN KEY (worker_id)
+        REFERENCES workers(id)
+);
 
 -- ============================================
--- PASO 4: Consultas SELECT básicas
+-- VERIFICACIÓN
 -- ============================================
 
--- Mostrar todos los servicios con todas sus columnas
-SELECT *
-FROM   services;
+-- .tables
 
--- Mostrar solo el nombre de los servicios ordenados alfabéticamente
-SELECT name
-FROM   services
-ORDER BY name ASC;
-
--- Contar cuántos servicios hay en total
-SELECT COUNT(*) AS time_hours
-FROM   services;
+-- PRAGMA table_info(clients);
+-- PRAGMA table_info(workers);
+-- PRAGMA table_info(schedules);
