@@ -1,6 +1,6 @@
 -- ============================================
--- PROYECTO SEMANAL: DML — Manipulación de Datos
--- Semana 03 — INSERT INTO, UPDATE, DELETE
+-- PROYECTO SEMANAL SQL
+-- Semana 03 + Semana 04
 -- Empresa de jardinería
 -- ============================================
 
@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS workers;
 DROP TABLE IF EXISTS clients;
 
 -- ============================================
--- TABLA 1: Clientes
+-- CREACIÓN DE TABLAS
 -- ============================================
 
 CREATE TABLE clients (
@@ -22,10 +22,6 @@ CREATE TABLE clients (
     CHECK (length(full_name) >= 3)
 );
 
--- ============================================
--- TABLA 2: Trabajadores
--- ============================================
-
 CREATE TABLE workers (
     id              INTEGER PRIMARY KEY,
     full_name       TEXT    NOT NULL,
@@ -36,10 +32,6 @@ CREATE TABLE workers (
 
     CHECK (salary > 0)
 );
-
--- ============================================
--- TABLA 3: Horarios
--- ============================================
 
 CREATE TABLE schedules (
     id              INTEGER PRIMARY KEY,
@@ -56,7 +48,7 @@ CREATE TABLE schedules (
 );
 
 -- ============================================
--- PARTE 1: INSERT INTO
+-- INSERTS
 -- ============================================
 
 INSERT INTO clients (id, full_name, phone, address, is_active)
@@ -84,7 +76,7 @@ VALUES
     (5, 5, 3, '2026-05-14', '16:00', 'pending');
 
 -- ============================================
--- PARTE 2: UPDATE
+-- UPDATE
 -- ============================================
 
 UPDATE clients
@@ -101,20 +93,83 @@ SET status = 'completed'
 WHERE status = 'pending';
 
 -- ============================================
--- PARTE 3: DELETE SEGURO
+-- DELETE
 -- ============================================
 
-SELECT id, full_name
-FROM clients
-WHERE is_active = 0;
+SELECT id, client_id
+FROM schedules
+WHERE client_id = 5;
+
+DELETE FROM schedules
+WHERE client_id = 5;
 
 DELETE FROM clients
 WHERE id = 5;
 
 -- ============================================
--- VERIFICACIÓN FINAL
+-- VERIFICACIÓN FINAL SEMANA 3
 -- ============================================
 
 SELECT * FROM clients ORDER BY id;
 SELECT * FROM workers ORDER BY id;
 SELECT * FROM schedules ORDER BY id;
+
+-- ============================================
+-- SEMANA 04 - CONSULTAS SELECT
+-- ============================================
+
+-- CONSULTA 1
+SELECT
+    id AS ID_Cliente,
+    full_name AS Nombre_Cliente,
+    phone AS Telefono,
+    address AS Direccion
+FROM clients;
+
+-- CONSULTA 2
+SELECT
+    id,
+    full_name,
+    specialty,
+    salary
+FROM workers
+WHERE is_available = 1;
+
+-- CONSULTA 3
+SELECT
+    id,
+    client_id,
+    worker_id,
+    service_date,
+    status
+FROM schedules
+WHERE status = 'completed'
+AND worker_id = 2;
+
+-- CONSULTA 4
+SELECT
+    id,
+    full_name,
+    specialty,
+    salary
+FROM workers
+ORDER BY salary DESC
+LIMIT 5;
+
+-- CONSULTA 5 - Página 1
+SELECT
+    id,
+    full_name,
+    phone
+FROM clients
+ORDER BY full_name ASC
+LIMIT 3 OFFSET 0;
+
+-- CONSULTA 5 - Página 2
+SELECT
+    id,
+    full_name,
+    phone
+FROM clients
+ORDER BY full_name ASC
+LIMIT 3 OFFSET 3;
