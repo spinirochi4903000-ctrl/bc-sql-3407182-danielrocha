@@ -1,6 +1,6 @@
 -- ============================================
--- PROYECTO SEMANAL SQL
--- Semana 03 + Semana 04
+-- PROYECTO SEMANAL: DML — Manipulación de Datos
+-- Semana 03 — INSERT INTO, UPDATE, DELETE
 -- Empresa de jardinería
 -- ============================================
 
@@ -8,9 +8,6 @@ DROP TABLE IF EXISTS schedules;
 DROP TABLE IF EXISTS workers;
 DROP TABLE IF EXISTS clients;
 
--- ============================================
--- CREACIÓN DE TABLAS
--- ============================================
 
 CREATE TABLE clients (
     id              INTEGER PRIMARY KEY,
@@ -21,6 +18,8 @@ CREATE TABLE clients (
 
     CHECK (length(full_name) >= 3)
 );
+
+
 
 CREATE TABLE workers (
     id              INTEGER PRIMARY KEY,
@@ -33,7 +32,12 @@ CREATE TABLE workers (
     CHECK (salary > 0)
 );
 
+
+
 CREATE TABLE schedules (
+    
+    
+    
     id              INTEGER PRIMARY KEY,
     client_id       INTEGER NOT NULL,
     worker_id       INTEGER NOT NULL,
@@ -47,9 +51,6 @@ CREATE TABLE schedules (
     FOREIGN KEY (worker_id) REFERENCES workers(id)
 );
 
--- ============================================
--- INSERTS
--- ============================================
 
 INSERT INTO clients (id, full_name, phone, address, is_active)
 VALUES
@@ -75,9 +76,6 @@ VALUES
     (4, 4, 5, '2026-05-13', '14:00', 'cancelled'),
     (5, 5, 3, '2026-05-14', '16:00', 'pending');
 
--- ============================================
--- UPDATE
--- ============================================
 
 UPDATE clients
 SET address = 'Av Central 3-15'
@@ -92,50 +90,48 @@ UPDATE schedules
 SET status = 'completed'
 WHERE status = 'pending';
 
--- ============================================
--- DELETE
--- ============================================
 
-SELECT id, client_id
-FROM schedules
-WHERE client_id = 5;
 
-DELETE FROM schedules
-WHERE client_id = 5;
+SELECT id, full_name
+FROM clients
+WHERE is_active = 0;
 
 DELETE FROM clients
 WHERE id = 5;
 
--- ============================================
--- VERIFICACIÓN FINAL SEMANA 3
--- ============================================
+
 
 SELECT * FROM clients ORDER BY id;
 SELECT * FROM workers ORDER BY id;
 SELECT * FROM schedules ORDER BY id;
 
 -- ============================================
--- SEMANA 04 - CONSULTAS SELECT
+-- CONSULTA 1: Filtro con BETWEEN
 -- ============================================
 
--- CONSULTA 1
-SELECT
-    id AS ID_Cliente,
-    full_name AS Nombre_Cliente,
-    phone AS Telefono,
-    address AS Direccion
-FROM clients;
+SELECT salary,
+FROM 
+WHERE  BETWEEN 
 
--- CONSULTA 2
+-- ============================================
+-- CONSULTA 1: Filtro con BETWEEN
+-- ============================================
+-- Mostrar trabajadores con salario entre 1.400.000 y 1.700.000
+
 SELECT
     id,
     full_name,
     specialty,
     salary
 FROM workers
-WHERE is_available = 1;
+WHERE salary BETWEEN 1400000 AND 1700000;
 
--- CONSULTA 3
+
+-- ============================================
+-- CONSULTA 2: Filtro con IN
+-- ============================================
+-- Mostrar horarios con estados específicos
+
 SELECT
     id,
     client_id,
@@ -143,33 +139,35 @@ SELECT
     service_date,
     status
 FROM schedules
-WHERE status = 'completed'
-AND worker_id = 2;
+WHERE status IN ('completed', 'cancelled');
 
--- CONSULTA 4
+
+-- ============================================
+-- CONSULTA 3: Búsqueda de texto con LIKE
+-- ============================================
+-- Buscar clientes cuyo nombre contenga 'a'
+
+SELECT
+    id,
+    full_name,
+    phone,
+    address
+FROM clients
+WHERE full_name LIKE '%a%';
+
+
+-- ============================================
+-- CONSULTA 4: Filtro combinado
+-- ============================================
+-- Combinar BETWEEN + IN + LIKE
+
 SELECT
     id,
     full_name,
     specialty,
     salary
 FROM workers
-ORDER BY salary DESC
-LIMIT 5;
-
--- CONSULTA 5 - Página 1
-SELECT
-    id,
-    full_name,
-    phone
-FROM clients
-ORDER BY full_name ASC
-LIMIT 3 OFFSET 0;
-
--- CONSULTA 5 - Página 2
-SELECT
-    id,
-    full_name,
-    phone
-FROM clients
-ORDER BY full_name ASC
-LIMIT 3 OFFSET 3;
+WHERE salary BETWEEN 1400000 AND 1800000
+AND specialty IN ('Poda', 'Riego', 'Fumigacion')
+AND full_name LIKE '%a%'
+ORDER BY salary DESC;
