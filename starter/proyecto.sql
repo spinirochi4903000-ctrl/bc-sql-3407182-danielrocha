@@ -77,97 +77,50 @@ VALUES
     (5, 5, 3, '2026-05-14', '16:00', 'pending');
 
 
-UPDATE clients
-SET address = 'Av Central 3-15'
-WHERE id = 1;
-
-UPDATE workers
-SET salary = 1700000,
-    is_available = 0
-WHERE id = 2;
-
-UPDATE schedules
-SET status = 'completed'
-WHERE status = 'pending';
-
-
-
-SELECT id, full_name
-FROM clients
-WHERE is_active = 0;
-
-DELETE FROM clients
-WHERE id = 5;
-
-
-
-SELECT * FROM clients ORDER BY id;
-SELECT * FROM workers ORDER BY id;
-SELECT * FROM schedules ORDER BY id;
 
 -- ============================================
--- CONSULTA 1: Filtro con BETWEEN
+-- PROYECTO SEMANAL: Funciones de Agregación
+-- Semana 06 — COUNT, SUM, AVG, GROUP BY, HAVING
 -- ============================================
 
-SELECT salary,
-FROM 
-WHERE  BETWEEN 
+-- ============================================
+-- REPORTE 1: Totales globales
+-- ============================================
+
+SELECT 
+    COUNT(*) AS total_registros,
+    SUM(service_date) AS total_horas,
+    AVG(service_date) AS promedio_horas
+FROM schedules;
 
 -- ============================================
--- CONSULTA 1: Filtro con BETWEEN
+-- REPORTE 2: Extremos
 -- ============================================
--- Mostrar trabajadores con salario entre 1.400.000 y 1.700.000
 
-SELECT
-    id,
+SELECT 
+    MIN(salary) AS menos,
+    MAX(salary) AS mayor
+FROM workers;
+
+-- ============================================
+-- REPORTE 3: Subtotales por categoría (GROUP BY)
+-- ============================================
+
+SELECT 
     full_name,
-    specialty,
-    salary
+    COUNT(*)    AS total,
+    AVG(salary) AS promedio
 FROM workers
-WHERE salary BETWEEN 1400000 AND 1700000;
-
-
--- ============================================
--- CONSULTA 2: Filtro con IN
--- ============================================
--- Mostrar horarios con estados específicos
-
-SELECT
-    id,
-    client_id,
-    worker_id,
-    service_date,
-    status
-FROM schedules
-WHERE status IN ('completed', 'cancelled');
-
+GROUP BY fullname
+ORDER BY total DESC;
 
 -- ============================================
--- CONSULTA 3: Búsqueda de texto con LIKE
+-- REPORTE 4: Filtro de grupos (HAVING)
 -- ============================================
--- Buscar clientes cuyo nombre contenga 'a'
 
-SELECT
-    id,
-    full_name,
-    phone,
-    address
-FROM clients
-WHERE full_name LIKE '%a%';
-
-
--- ============================================
--- CONSULTA 4: Filtro combinado
--- ============================================
--- Combinar BETWEEN + IN + LIKE
-
-SELECT
-    id,
-    full_name,
-    specialty,
-    salary
+SELECT 
+    salary,
+    COUNT(*) AS total
 FROM workers
-WHERE salary BETWEEN 1400000 AND 1800000
-AND specialty IN ('Poda', 'Riego', 'Fumigacion')
-AND full_name LIKE '%a%'
-ORDER BY salary DESC;
+GROUP BY salary
+HAVING COUNT(*) > 1;
