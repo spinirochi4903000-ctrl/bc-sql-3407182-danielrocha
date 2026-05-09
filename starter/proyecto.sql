@@ -1,92 +1,120 @@
 -- ============================================
--- PROYECTO SEMANAL: Conoce tu Dominio
--- Semana 01 — Introducción a Bases de Datos Relacionales
+-- PROYECTO SEMANAL: DML — Manipulación de Datos
+-- Semana 03 — INSERT INTO, UPDATE, DELETE
+-- Empresa de jardinería
 -- ============================================
 
--- NOTA PARA EL APRENDIZ:
--- Adapta este esquema al dominio que te fue asignado.
--- Renombra las tablas y columnas según corresponda.
--- Ejemplos:
---   Biblioteca  → books, members, loans
---   Farmacia    → medicines, sales, inventory
---   Gimnasio    → members, routines, attendance
---   Restaurante → dishes, tables, orders
+DROP TABLE IF EXISTS schedules;
+DROP TABLE IF EXISTS workers;
+DROP TABLE IF EXISTS clients;
 
 -- ============================================
--- PASO 1: Crear la entidad principal
+-- TABLA 1: Clientes
 -- ============================================
 
--- TODO: Renombrar 'items' según tu dominio (ej: books, medicines, dishes)
--- TODO: Agregar columnas específicas de tu entidad principal
-CREATE TABLE services (
-    id         INTEGER PRIMARY KEY,
-    name        TEXT    NOT NULL,
-    price       REAL    NOT NULL,
-    time_hours  INTEGER NOT NULL
-
-    -- TODO: Agregar al menos 2 columnas más relevantes para tu dominio
-    -- Ejemplos: price REAL, description TEXT, is_active INTEGER DEFAULT 1
-);
-
--- ============================================
--- PASO 2: Crear una segunda entidad
--- ============================================
-
--- TODO: Renombrar 'entities' según tu dominio (ej: members, clients, users)
--- TODO: Agregar columnas específicas
 CREATE TABLE clients (
-    id          INTEGER PRIMARY KEY,
-    name        TEXT    NOT NULL,
-    email       TEXT    NOT NULL UNIQUE,
-    phone       TEXT    NOT NULL UNIQUE
-    -- TODO: Agregar columnas relevantes
-    -- Ejemplos: email TEXT, phone TEXT, created_at TEXT
+    id              INTEGER PRIMARY KEY,
+    full_name       TEXT    NOT NULL,
+    phone           TEXT    NOT NULL UNIQUE,
+    address         TEXT    NOT NULL,
+    is_active       INTEGER NOT NULL DEFAULT 1,
+
+    CHECK (length(full_name) >= 3)
 );
 
 -- ============================================
--- PASO 3: Insertar datos de prueba
+-- TABLA 2: Trabajadores
 -- ============================================
 
--- TODO: Insertar al menos 5 registros en cada tabla
--- Usa datos realistas relacionados con tu dominio
-INSERT INTO services (id, name, price, time_hours) VALUES
-    (1, 'Podada de Césped', 50000, 2);
-INSERT INTO services (id, name, price, time_hours) VALUES  
-    (2, 'Rocio de Plagas',75000, 3);
-INSERT INTO services (id, name, price, time_hours) VALUES
-    (3, 'Diseño de Paisajismo', 150000, 5);
-INSERT INTO services (id, name, price, time_hours) VALUES
-    (4, 'Mantenimiento de Jardin', 150000, 4);
-INSERT INTO services (id, name, price, time_hours) VALUES
-    (5, 'Instalación de Riego', 200000, 6);
+CREATE TABLE workers (
+    id              INTEGER PRIMARY KEY,
+    full_name       TEXT    NOT NULL,
+    specialty       TEXT    NOT NULL,
+    salary          REAL    NOT NULL,
+    email           TEXT    UNIQUE,
+    is_available    INTEGER NOT NULL DEFAULT 1,
 
-    -- TODO: Agregar más registros
-
-INSERT INTO clients (id, name, email, phone) VALUES
-    (10, 'Daniel Rocha', 'A.drc@gmail.com', '3155040012');
-INSERT INTO clients (id, name, email, phone) VALUES
-    (20, 'Juan Rincon', 'juan.rincon@gmail.com', '314 2182527');
-INSERT INTO clients (id, name, email, phone) VALUES
-    (30, 'Tomas Martin', 'Lrush@gmail.com', '316 2182527');
-INSERT INTO clients (id, name, email, phone) VALUES
-    (40, 'Lizabeth Moreno', 'liz@gmail.com', '317 2182527');
-INSERT INTO clients (id, name, email, phone) VALUES 
-    (50, 'Sofia Ramirez', 'sofia.ramirez@gmail.com', '318 2182527');
-    -- TODO: Agregar más registros
+    CHECK (salary > 0)
+);
 
 -- ============================================
--- PASO 4: Consultas SELECT básicas
+-- TABLA 3: Horarios
 -- ============================================
 
--- Mostrar todos los servicios con todas sus columnas
-SELECT *
-FROM   services;
+CREATE TABLE schedules (
+    id              INTEGER PRIMARY KEY,
+    client_id       INTEGER NOT NULL,
+    worker_id       INTEGER NOT NULL,
+    service_date    DATE    NOT NULL,
+    service_time    TEXT    NOT NULL,
+    status          TEXT    NOT NULL DEFAULT 'pending',
 
--- Mostrar solo el nombre de los servicios ordenados alfabéticamente
-SELECT name
-FROM   services
-ORDER BY name ASC;
+    CHECK (status IN ('pending', 'completed', 'cancelled')),
 
--- Contar cuántos servicios hay en total
-SELECT COUNT(*) AS time_hours
-FROM   services;
+    FOREIGN KEY (client_id) REFERENCES clients(id),
+    FOREIGN KEY (worker_id) REFERENCES workers(id)
+);
+
+-- ============================================
+-- PARTE 1: INSERT INTO
+-- ============================================
+
+INSERT INTO clients (id, full_name, phone, address, is_active)
+VALUES
+    (1, 'Juan Perez', '3001111111', 'Calle 10 #15-20', 1),
+    (2, 'Maria Lopez', '3002222222', 'Cra 8 #12-34', 1),
+    (3, 'Carlos Ruiz', '3003333333', 'Av 5 #9-18', 1),
+    (4, 'Ana Torres', '3004444444', 'Calle 22 #7-45', 1),
+    (5, 'Luis Gomez', '3005555555', 'Cra 14 #30-12', 0);
+
+INSERT INTO workers (id, full_name, specialty, salary, email, is_available)
+VALUES
+    (1, 'Pedro Diaz', 'Poda', 1500000, 'pedro@gmail.com', 1),
+    (2, 'Laura Castro', 'Riego', 1400000, 'laura@gmail.com', 1),
+    (3, 'Andres Vega', 'Paisajismo', 1800000, 'andres@gmail.com', 0),
+    (4, 'Sofia Rojas', 'Fumigacion', 1600000, 'sofia@gmail.com', 1),
+    (5, 'Diego Mora', 'Mantenimiento', 1450000, 'diego@gmail.com', 1);
+
+INSERT INTO schedules (id, client_id, worker_id, service_date, service_time, status)
+VALUES
+    (1, 1, 1, '2026-05-10', '08:00', 'pending'),
+    (2, 2, 2, '2026-05-11', '09:30', 'completed'),
+    (3, 3, 4, '2026-05-12', '10:00', 'pending'),
+    (4, 4, 5, '2026-05-13', '14:00', 'cancelled'),
+    (5, 5, 3, '2026-05-14', '16:00', 'pending');
+
+-- ============================================
+-- PARTE 2: UPDATE
+-- ============================================
+
+UPDATE clients
+SET address = 'Av Central 3-15'
+WHERE id = 1;
+
+UPDATE workers
+SET salary = 1700000,
+    is_available = 0
+WHERE id = 2;
+
+UPDATE schedules
+SET status = 'completed'
+WHERE status = 'pending';
+
+-- ============================================
+-- PARTE 3: DELETE SEGURO
+-- ============================================
+
+SELECT id, full_name
+FROM clients
+WHERE is_active = 0;
+
+DELETE FROM clients
+WHERE id = 5;
+
+-- ============================================
+-- VERIFICACIÓN FINAL
+-- ============================================
+
+SELECT * FROM clients ORDER BY id;
+SELECT * FROM workers ORDER BY id;
+SELECT * FROM schedules ORDER BY id;
