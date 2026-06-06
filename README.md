@@ -6,10 +6,10 @@ En esta etapa, se han realizado 4 commits para establecer las bases del diseño 
 🎯 Objetivos de la Semana
 Definición de Datos (DDL): Implementación de sentencias para la creación de tablas, índices y restricciones.
 Diseño de Esquemas: Modelado lógico y físico de la base de datos para asegurar la integridad de la información.
-Relaciones: Configuración de llaves primarias (PK) y llaves foráneas (FK).
+
 
 🛠️ Herramientas Utilizadas
-SQL Dialect: [Insertar motor, ej: PostgreSQL/MySQL]
+SQL Dialect: SQLite
 Control de Versiones: GitHub para el seguimiento de cambios y gestión de ramas.
 
 🚀 Cómo ejecutar los scripts
