@@ -5,7 +5,6 @@ Este repositorio contiene los ejercicios y desarrollos de bases de datos corresp
 📋 Contenido del Proyecto
 Scripts de Creación: Archivos .sql para definir las tablas y relaciones.
 Consultas (Queries): Scripts con resoluciones a problemas específicos planteados en clase.
-Diagrama ER: (Si incluiste uno) Representación visual de la base de datos.
 
 🛠️ Tecnologías Utilizadas
 Motor de Base de Datos: SQLite
