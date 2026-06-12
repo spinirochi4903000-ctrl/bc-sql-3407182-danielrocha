@@ -160,15 +160,15 @@ CREATE TABLE categories (
      description TEXT
 );
 
--- Tabla principal de items (Inventario de jardinería) con todos los constraints
+
 CREATE TABLE items (
      id               INTEGER PRIMARY KEY,
      name             TEXT    NOT NULL,
-     sku              TEXT    NOT NULL UNIQUE,         -- Columna con UNIQUE
-     price            REAL    NOT NULL CHECK(price > 0), -- Columna numérica con CHECK
+     sku              TEXT    NOT NULL UNIQUE,         
+     price            REAL    NOT NULL CHECK(price > 0), 
      stock            INTEGER NOT NULL DEFAULT 0,
-     is_active        INTEGER NOT NULL DEFAULT 1,      -- Columna con DEFAULT
-     notes            TEXT,                            -- Columna opcional (permite NULL)
+     is_active        INTEGER NOT NULL DEFAULT 1,      
+     notes            TEXT,                            
      category_id      INTEGER NOT NULL REFERENCES categories(id) ON DELETE RESTRICT
 );
 
@@ -176,18 +176,18 @@ CREATE TABLE items (
 -- PARTE 2: DATOS DE PRUEBA
 -- ============================================
 
--- Insertar 3 categorías
+
 INSERT INTO categories (id, name, description) VALUES
      (1, 'Herramientas manuales', 'Tijeras, palas, rastrillos y demás utensilios de mano.'),
      (2, 'Maquinaria', 'Cortacéspedes, desbrozadoras y herramientas motorizadas.'),
      (3, 'Químicos y Fertilizantes', 'Abonos, sustratos, insecticidas y fungicidas.');
 
--- Insertar 6 items, con 2 de ellos teniendo la columna 'notes' como NULL
+
 INSERT INTO items (id, name, sku, price, stock, is_active, notes, category_id) VALUES
      (1, 'Tijera de Podar Bypass', 'HERR-001', 25000.0, 15, 1, 'Filo de alta resistencia', 1),
-     (2, 'Pala de Punta Cuadrada', 'HERR-002', 18000.0, 10, 1, NULL, 1), -- NULL opcional
+     (2, 'Pala de Punta Cuadrada', 'HERR-002', 18000.0, 10, 1, NULL, 1), 
      (3, 'Cortacésped a Gasolina 4HP', 'MAQU-001', 850000.0, 3, 1, 'Requiere mantenimiento mensual', 2),
-     (4, 'Orilladora Eléctrica 500W', 'MAQU-002', 140000.0, 5, 1, NULL, 2), -- NULL opcional
+     (4, 'Orilladora Eléctrica 500W', 'MAQU-002', 140000.0, 5, 1, NULL, 2), 
      (5, 'Fertilizante Triple 15 (1kg)', 'QUIM-001', 12000.0, 50, 1, 'Uso general para plantas de jardín', 3),
      (6, 'Insecticida Orgánico (500ml)', 'QUIM-002', 17500.0, 20, 1, 'Seguro para mascotas', 3);
 
