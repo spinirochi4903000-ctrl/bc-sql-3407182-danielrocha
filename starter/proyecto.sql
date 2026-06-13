@@ -4,13 +4,11 @@
 -- Empresa de jardinería
 -- ============================================
 
-
 DROP TABLE IF EXISTS schedules;
 DROP TABLE IF EXISTS workers;
 DROP TABLE IF EXISTS clients;
-
-
-
+DROP TABLE IF EXISTS items;
+DROP TABLE IF EXISTS categories;
 
 CREATE TABLE clients (
     id              INTEGER PRIMARY KEY,
@@ -19,14 +17,8 @@ CREATE TABLE clients (
     address         TEXT    NOT NULL,
     is_active       INTEGER NOT NULL DEFAULT 1,
 
-
     CHECK (length(full_name) >= 3)
 );
-
-
-
-
-
 
 CREATE TABLE workers (
     id              INTEGER PRIMARY KEY,
@@ -36,19 +28,10 @@ CREATE TABLE workers (
     email           TEXT    UNIQUE,
     is_available    INTEGER NOT NULL DEFAULT 1,
 
-
     CHECK (salary > 0)
 );
 
-
-
-
-
-
 CREATE TABLE schedules (
-   
-   
-   
     id              INTEGER PRIMARY KEY,
     client_id       INTEGER NOT NULL,
     worker_id       INTEGER NOT NULL,
@@ -56,16 +39,11 @@ CREATE TABLE schedules (
     service_time    TEXT    NOT NULL,
     status          TEXT    NOT NULL DEFAULT 'pending',
 
-
     CHECK (status IN ('pending', 'completed', 'cancelled')),
-
 
     FOREIGN KEY (client_id) REFERENCES clients(id),
     FOREIGN KEY (worker_id) REFERENCES workers(id)
 );
-
-
-
 
 INSERT INTO clients (id, full_name, phone, address, is_active)
 VALUES
@@ -75,7 +53,6 @@ VALUES
     (4, 'Ana Torres', '3004444444', 'Calle 22 #7-45', 1),
     (5, 'Luis Gomez', '3005555555', 'Cra 14 #30-12', 0);
 
-
 INSERT INTO workers (id, full_name, specialty, salary, email, is_available)
 VALUES
     (1, 'Pedro Diaz', 'Poda', 1500000, 'pedro@gmail.com', 1),
@@ -83,7 +60,6 @@ VALUES
     (3, 'Andres Vega', 'Paisajismo', 1800000, 'andres@gmail.com', 0),
     (4, 'Sofia Rojas', 'Fumigacion', 1600000, 'sofia@gmail.com', 1),
     (5, 'Diego Mora', 'Mantenimiento', 1450000, 'diego@gmail.com', 1);
-
 
 INSERT INTO schedules (id, client_id, worker_id, service_date, service_time, status)
 VALUES
@@ -94,72 +70,11 @@ VALUES
     (5, 5, 3, '2026-05-14', '16:00', 'pending');
 
 
-
-
-
-
--- ============================================
--- PROYECTO SEMANAL: Funciones de Agregación
--- Semana 06 — COUNT, SUM, AVG, GROUP BY, HAVING
--- ============================================
-
-
--- ============================================
--- REPORTE 1: Totales globales
--- ============================================
-
-
-SELECT
-    COUNT(*) AS total_registros,
-    SUM(service_date) AS total_horas,
-    AVG(service_date) AS promedio_horas
-FROM schedules;
-
-
--- ============================================
--- REPORTE 2: Extremos
--- ============================================
-
-
-SELECT
-    MIN(salary) AS menos,
-    MAX(salary) AS mayor
-FROM workers;
-
-
--- ============================================
--- REPORTE 3: Subtotales por categoría (GROUP BY)
--- ============================================
-
-
-SELECT
-    full_name,
-    COUNT(*)    AS total,
-    AVG(salary) AS promedio
-FROM workers
-GROUP BY fullname
-ORDER BY total DESC;
-
-
--- ============================================
--- REPORTE 4: Filtro de grupos (HAVING)
--- ============================================
-
-
-SELECT
-    salary,
-    COUNT(*) AS total
-FROM workers
-GROUP BY salary
-HAVING COUNT(*) > 1;
-
-
 CREATE TABLE categories (
      id          INTEGER PRIMARY KEY,
      name        TEXT    NOT NULL UNIQUE,
      description TEXT
 );
-
 
 CREATE TABLE items (
      id               INTEGER PRIMARY KEY,
@@ -168,20 +83,15 @@ CREATE TABLE items (
      price            REAL    NOT NULL CHECK(price > 0), 
      stock            INTEGER NOT NULL DEFAULT 0,
      is_active        INTEGER NOT NULL DEFAULT 1,      
-     notes            TEXT,                            
+     notes            TEXT,                                
      category_id      INTEGER NOT NULL REFERENCES categories(id) ON DELETE RESTRICT
 );
 
--- ============================================
--- PARTE 2: DATOS DE PRUEBA
--- ============================================
-
-
+-- DATOS DE PRUEBA
 INSERT INTO categories (id, name, description) VALUES
      (1, 'Herramientas manuales', 'Tijeras, palas, rastrillos y demás utensilios de mano.'),
      (2, 'Maquinaria', 'Cortacéspedes, desbrozadoras y herramientas motorizadas.'),
      (3, 'Químicos y Fertilizantes', 'Abonos, sustratos, insecticidas y fungicidas.');
-
 
 INSERT INTO items (id, name, sku, price, stock, is_active, notes, category_id) VALUES
      (1, 'Tijera de Podar Bypass', 'HERR-001', 25000.0, 15, 1, 'Filo de alta resistencia', 1),
@@ -191,26 +101,10 @@ INSERT INTO items (id, name, sku, price, stock, is_active, notes, category_id) V
      (5, 'Fertilizante Triple 15 (1kg)', 'QUIM-001', 12000.0, 50, 1, 'Uso general para plantas de jardín', 3),
      (6, 'Insecticida Orgánico (500ml)', 'QUIM-002', 17500.0, 20, 1, 'Seguro para mascotas', 3);
 
--- ============================================
--- PARTE 3: CONSULTAS CON NULL
--- ============================================
 
--- Mostrar items donde la columna opcional IS NULL
-SELECT id, name, sku
-FROM   items
-WHERE  notes IS NULL;
-
--- Mostrar todos los items usando COALESCE para reemplazar NULL
-SELECT
-     name,
-     sku,
-     price,
-     COALESCE(notes, 'Sin observaciones registradas') AS col_display
-FROM items;
 
 SELECT
-    wk.speciality     AS wk_speciality,
-    sh.services_date 
+    wk.specialty     AS wk_specialty,
+    sh.service_date 
 FROM schedules sh 
-INNER JOIN workers wk ON sh.worker_id = wk.worker_id;
- 
+INNER JOIN workers wk ON sh.worker_id = wk.id;
