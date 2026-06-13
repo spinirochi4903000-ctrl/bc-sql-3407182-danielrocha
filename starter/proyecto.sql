@@ -108,3 +108,13 @@ SELECT
     sh.service_date 
 FROM schedules sh 
 INNER JOIN workers wk ON sh.worker_id = wk.id;
+
+SELECT 
+    wk.full_name    AS trabajador,
+    cl.full_name    AS cliente,
+    sh.service_date 
+FROM schedules sh 
+INNER JOIN workers wk ON sh.worker_id = wk.id
+INNER JOIN clients cl ON sh.client_id = cl.id;
+
+
