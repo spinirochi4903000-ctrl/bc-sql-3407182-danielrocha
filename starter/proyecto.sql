@@ -207,3 +207,10 @@ SELECT
      price,
      COALESCE(notes, 'Sin observaciones registradas') AS col_display
 FROM items;
+
+SELECT
+    wk.speciality     AS wk_speciality,
+    sh.services_date 
+FROM schedules sh 
+INNER JOIN workers wk ON sh.worker_id = wk.worker_id;
+ 
