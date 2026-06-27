@@ -102,19 +102,45 @@ INSERT INTO items (id, name, sku, price, stock, is_active, notes, category_id) V
      (6, 'Insecticida Orgánico (500ml)', 'QUIM-002', 17500.0, 20, 1, 'Seguro para mascotas', 3);
 
 
-
 SELECT
+    wk.full_name     AS trabajador,
     wk.specialty     AS wk_specialty,
-    sh.service_date 
+    sh.service_date  AS fecha_servicio
 FROM schedules sh 
 INNER JOIN workers wk ON sh.worker_id = wk.id;
 
+
 SELECT 
-    wk.full_name    AS trabajador,
-    cl.full_name    AS cliente,
-    sh.service_date 
+    wk.full_name     AS trabajador,
+    cl.full_name     AS cliente,
+    sh.service_date  AS fecha_servicio
 FROM schedules sh 
 INNER JOIN workers wk ON sh.worker_id = wk.id
 INNER JOIN clients cl ON sh.client_id = cl.id;
+
+
+SELECT
+    wk.full_name     AS trabajador,
+    wk.specialty     AS wk_specialty,
+    sh.service_date  AS fecha_servicio
+FROM workers wk
+LEFT JOIN schedules sh ON sh.worker_id = wk.id;
+
+
+SELECT
+    wk.full_name AS trabajador_sin_actividad,
+    wk.specialty
+FROM workers wk
+LEFT JOIN schedules sh ON sh.worker_id = wk.id
+WHERE sh.id IS NULL;
+
+
+SELECT
+    wk.full_name    AS trabajador,
+    COUNT(sh.id)    AS total_servicios
+FROM workers wk
+LEFT JOIN schedules sh ON sh.worker_id = wk.id
+GROUP BY wk.id, wk.full_name
+ORDER BY total_servicios DESC;
 
 
